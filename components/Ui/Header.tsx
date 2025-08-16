@@ -65,7 +65,7 @@ export default function AppHeader({ user, onLogout }: AppHeaderProps) {
               {/* Create Poll Button */}
               <Link 
                 href="/auth/create" 
-                className="flex items-center space-x-2 text-sm bg-gradient-to-r from-indigo-600 to-indigo-500 text-white px-4 py-2 rounded-md shadow-md hover:shadow-lg transition-all hover:scale-[1.02]"
+                className="flex items-center space-x-2 text-sm bg-indigo-600 text-white px-4 py-2 rounded-md transition-all hover:scale-[1.02]"
               >
                 <FaPlus className="text-white" />
                 <span>Créer un sondage</span>
@@ -133,7 +133,7 @@ export default function AppHeader({ user, onLogout }: AppHeaderProps) {
               ) : (
                 <Link
                   href="/auth/login"
-                  className="text-sm bg-indigo-500 text-white px-4 py-1.5 rounded hover:bg-indigo-600 transition-colors"
+                  className="text-sm bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors"
                 >
                   Connexion
                 </Link>

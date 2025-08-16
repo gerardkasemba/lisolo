@@ -226,8 +226,16 @@ export default function PollOptions({
   const currentShareImage = shareUrls?.imageUrl || poll.options[0]?.image_url || '';
   const currentShareDescription = shareUrls?.description || `${totalVotes} personnes ont voté • ${commentCount} commentaires`;
 
+  const emailBody = encodeURIComponent(`
+    ${currentShareDescription}
+
+    <img src="${currentShareImage}" alt="share image" style="max-width:300px;" />
+
+    Read more: ${currentShareUrl}
+  `);
+
   return (
-    <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <section className="w-full max-w-7xl mx-auto px-0 sm:px-0 lg:px-0 py-8">
       {/* Poll Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
@@ -263,7 +271,7 @@ export default function PollOptions({
               <div className="grid grid-cols-4 gap-2 sm:gap-3 mb-4">
                 <TwitterShareButton 
                   url={currentShareUrl} 
-                  title={currentShareTitle}
+                  title={`${currentShareTitle}\n${currentShareDescription}\n${currentShareImage}\n`}
                   className="flex justify-center"
                 >
                   <div className="w-10 h-10 rounded-full bg-blue-400 flex items-center justify-center text-white hover:bg-blue-500 transition-colors">
@@ -280,6 +288,7 @@ export default function PollOptions({
                   </div>
                 </FacebookShareButton>
 
+
                 <FacebookMessengerShareButton
                   url={currentShareUrl}
                   appId="YOUR_FB_APP_ID"
@@ -292,7 +301,7 @@ export default function PollOptions({
                 
                 <WhatsappShareButton 
                   url={currentShareUrl} 
-                  title={currentShareTitle}
+                  title={`${currentShareTitle}\n${currentShareDescription}`} 
                   className="flex justify-center"
                 >
                   <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white hover:bg-green-600 transition-colors">
@@ -311,16 +320,16 @@ export default function PollOptions({
                   </div>
                 </LinkedinShareButton>
 
-                <EmailShareButton
-                  url={currentShareUrl}
-                  subject={currentShareTitle}
-                  body={currentShareDescription}
-                  className="flex justify-center"
-                >
-                  <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white hover:bg-gray-700 transition-colors">
-                    <FaEnvelope className="text-lg" />
-                  </div>
-                </EmailShareButton>
+<EmailShareButton
+  url={currentShareUrl} // still needed for mailto link
+  subject={currentShareTitle}
+  body={emailBody}
+  className="flex justify-center"
+>
+  <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white hover:bg-gray-700 transition-colors">
+    <FaEnvelope className="text-lg" />
+  </div>
+</EmailShareButton>
 
                 <button
                   onClick={copyToClipboard}

@@ -108,7 +108,7 @@ export default function PollComments({
     <div className="w-full bg-gray-100 dark:bg-gray-900">
       <section
         aria-labelledby="comments-heading"
-        className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+        className="w-full max-w-7xl mx-auto py-8"
       >
         {/* En-tête des commentaires */}
         <h2
