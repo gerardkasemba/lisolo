@@ -1,0 +1,51 @@
+{
+  "name": "lisolo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@headlessui/react": "^2.2.7",
+    "@hookform/resolvers": "^5.2.1",
+    "@onesignal/node-onesignal": "^5.2.0-beta1",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.54.0",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "firebase": "^12.1.0",
+    "framer-motion": "^12.23.12",
+    "html2canvas": "^1.4.1",
+    "leaflet": "^1.9.4",
+    "natural": "^8.1.0",
+    "next": "15.4.6",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-hook-form": "^7.62.0",
+    "react-hot-toast": "^2.5.2",
+    "react-icons": "^5.5.0",
+    "react-leaflet": "^5.0.0",
+    "react-native": "^0.80.2",
+    "react-share": "^5.2.2",
+    "react-spinners": "^0.17.0",
+    "string-similarity": "^4.0.4",
+    "web-push": "^3.6.7",
+    "zod": "^4.0.17"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/html2canvas": "^0.5.35",
+    "@types/natural": "^5.1.5",
+    "@types/node": "^20",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19",
+    "@types/string-similarity": "^4.0.2",
+    "@types/web-push": "^3.6.4",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

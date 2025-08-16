@@ -1,0 +1,10 @@
+{
+  "name": "Your App",
+  "icons": [
+    {
+      "src": "/notification-icon.png",
+      "sizes": "196x196",
+      "type": "image/png"
+    }
+  ]
+}
