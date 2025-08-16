@@ -6,6 +6,7 @@ import Header from '@/components/Ui/Header';
 import Footer from '@/components/Ui/Footer';
 import "./globals.css";
 import { supabase } from '@/lib/supabase';
+import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -56,12 +57,29 @@ export default function RootLayout({
   };
   return (
     <html lang="en">
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="application-name" content="Lisolo" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Lisolo" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="theme-color" content="#4f46e5" />
+
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Lisolo" />
+        <link rel="manifest" href="/site.manifest" />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {/* ⬇ STEP 1: Start with static content here */}
         {/* Once confirmed no mismatch, replace with {children} */}
         {/* <div>Static test render</div> */}
         <Header user={user} onLogout={handleLogout} />
           {children}
+          <PWAInstallPrompt />
         <Footer />
       </body>
     </html>
