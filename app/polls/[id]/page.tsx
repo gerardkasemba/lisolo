@@ -4,23 +4,24 @@ import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase';
 import PollDetail from '@/components/profile/polls/PollDetail';
 
-interface PollPageProps {
+interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-export async function generateMetadata({ params }: PollPageProps): Promise<Metadata> {
-  const resolvedParams = await params;
-  const pollId = Number(resolvedParams.id);
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params; // Await params to get id
+  const pollId = Number(id);
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://lisolo.com';
 
   if (isNaN(pollId)) {
     return {
       title: 'Lisolo | Sondage Introuvable',
-      description: 'Ce sondage n’existe pas. Explorez d’autres sondages sur Lisolo pour participer aux discussions de la communauté congolaise !',
+      description: 'Ce sondage n\'existe pas. Explorez d\'autres sondages sur Lisolo!',
     };
   }
 
   const supabase = createClient();
-  
+
   const { data: poll, error } = await supabase
     .from('polls')
     .select(`
@@ -30,38 +31,41 @@ export async function generateMetadata({ params }: PollPageProps): Promise<Metad
       image_url,
       category,
       created_at,
-      created_by,
-      profiles:created_by(name)
+      created_by
     `)
     .eq('id', pollId)
     .single();
 
   if (!poll || error) {
     return {
-      title: 'Lisolo | Sondage Introuvabless',
-      description: 'Ce sondage n’existe pas. Explorez d’autres sondages sur Lisolo pour participer aux discussions de la communauté congolaise !',
+      title: 'Lisolo | Sondage Introuvable',
+      description: 'Ce sondage n\'existe pas ou a été supprimé.',
     };
   }
 
   const title = `${poll.question} | Lisolo`;
-  const description = `Participez au sondage : "${poll.question}" sur Lisolo. Rejoignez la communauté congolaise pour partager votre opinion !`;
-  const imageUrl = poll.image_url || 'https://yourdomain.com/default-poll-image.jpg';
-  const url = `https://yourdomain.com/polls/${pollId}`;
+  const description = `Participez à ce sondage: "${poll.question.substring(0, 100)}..."`;
+  const imageUrl = poll.image_url
+    ? new URL(poll.image_url, SITE_URL).toString()
+    : new URL('/default-poll-image.jpg', SITE_URL).toString();
+  const url = new URL(`/polls/${pollId}`, SITE_URL).toString();
 
   return {
+    metadataBase: new URL(SITE_URL),
     title,
     description,
     openGraph: {
       title,
       description,
       url,
-      type: 'website',
+      type: 'article',
+      publishedTime: poll.created_at,
       images: [
         {
           url: imageUrl,
           width: 1200,
           height: 630,
-          alt: poll.question,
+          alt: `Sondage: ${poll.question}`,
         },
       ],
       siteName: 'Lisolo',
@@ -75,9 +79,9 @@ export async function generateMetadata({ params }: PollPageProps): Promise<Metad
   };
 }
 
-export default async function PollPage({ params }: PollPageProps) {
-  const resolvedParams = await params;
-  const pollId = Number(resolvedParams.id);
+export default async function PollPage({ params }: PageProps) {
+  const { id } = await params; // Await params to get id
+  const pollId = Number(id);
 
   if (isNaN(pollId)) {
     notFound();
@@ -88,7 +92,10 @@ export default async function PollPage({ params }: PollPageProps) {
 
 export async function generateStaticParams() {
   const supabase = createClient();
-  const { data: polls } = await supabase.from('polls').select('id');
+  const { data: polls, error } = await supabase
+    .from('polls')
+    .select('id')
+    .limit(100);
 
   return polls?.map((poll) => ({
     id: poll.id.toString(),

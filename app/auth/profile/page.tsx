@@ -94,8 +94,8 @@ function ProfileContent() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-white">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+      <div className="flex justify-center items-center h-screen bg-white dark:bg-gray-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500 dark:border-indigo-400"></div>
       </div>
     );
   }
@@ -103,9 +103,9 @@ function ProfileContent() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-white text-gray-800 pb-20">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 pb-20">
       {/* Profile Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar */}
           <div className="lg:col-span-1">
@@ -116,48 +116,61 @@ function ProfileContent() {
           <div className="lg:col-span-3 space-y-6">
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-white rounded-xl p-6 shadow border border-gray-200">
+              <motion.div 
+                whileHover={{ y: -2 }}
+                className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow dark:shadow-none border border-gray-200 dark:border-gray-700"
+              >
                 <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-full bg-indigo-100">
-                    <FaPoll className="text-indigo-600 text-xl" />
+                  <div className="p-3 rounded-full bg-indigo-100 dark:bg-indigo-900/30">
+                    <FaPoll className="text-indigo-600 dark:text-indigo-400 text-xl" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Sondages créés</p>
-                    <p className="text-2xl font-bold">{user.stats?.polls || 0}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Sondages créés</p>
+                    <p className="text-2xl font-bold dark:text-white">{user.stats?.polls || 0}</p>
                   </div>
                 </div>
-              </div>
-              <div className="bg-white rounded-xl p-6 shadow border border-gray-200">
+              </motion.div>
+              
+              <motion.div 
+                whileHover={{ y: -2 }}
+                className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow dark:shadow-none border border-gray-200 dark:border-gray-700"
+              >
                 <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-full bg-purple-100">
-                    <FiPieChart className="text-purple-600 text-xl" />
+                  <div className="p-3 rounded-full bg-purple-100 dark:bg-purple-900/30">
+                    <FiPieChart className="text-purple-600 dark:text-purple-400 text-xl" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Votes</p>
-                    <p className="text-2xl font-bold">{user.stats?.votes || 0}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Votes</p>
+                    <p className="text-2xl font-bold dark:text-white">{user.stats?.votes || 0}</p>
                   </div>
                 </div>
-              </div>
-              <div className="bg-white rounded-xl p-6 shadow border border-gray-200">
+              </motion.div>
+              
+              <motion.div 
+                whileHover={{ y: -2 }}
+                className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow dark:shadow-none border border-gray-200 dark:border-gray-700"
+              >
                 <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-full bg-blue-100">
-                    <FiMessageSquare className="text-blue-600 text-xl" />
+                  <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-900/30">
+                    <FiMessageSquare className="text-blue-600 dark:text-blue-400 text-xl" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Commentaires</p>
-                    <p className="text-2xl font-bold">{user.stats?.comments || 0}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Commentaires</p>
+                    <p className="text-2xl font-bold dark:text-white">{user.stats?.comments || 0}</p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
 
             {/* Tabs */}
-            <div className="bg-white rounded-xl shadow border border-gray-200 overflow-hidden">
-              <div className="flex border-b border-gray-200">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow dark:shadow-none border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div className="flex border-b border-gray-200 dark:border-gray-700">
                 <button
                   onClick={() => setActiveTab('polls')}
                   className={`flex-1 py-4 px-1 text-center font-medium text-sm transition-colors ${
-                    activeTab === 'polls' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-500 hover:text-gray-700'
+                    activeTab === 'polls' 
+                      ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400' 
+                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                   }`}
                 >
                   <div className="flex items-center justify-center gap-2">
@@ -168,7 +181,9 @@ function ProfileContent() {
                 <button
                   onClick={() => setActiveTab('activity')}
                   className={`flex-1 py-4 px-1 text-center font-medium text-sm transition-colors ${
-                    activeTab === 'activity' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-500 hover:text-gray-700'
+                    activeTab === 'activity' 
+                      ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400' 
+                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                   }`}
                 >
                   <div className="flex items-center justify-center gap-2">
@@ -179,7 +194,9 @@ function ProfileContent() {
                 <button
                   onClick={() => setActiveTab('messages')}
                   className={`flex-1 py-4 px-1 text-center font-medium text-sm transition-colors ${
-                    activeTab === 'messages' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-500 hover:text-gray-700'
+                    activeTab === 'messages' 
+                      ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400' 
+                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                   }`}
                 >
                   <div className="flex items-center justify-center gap-2">
@@ -204,9 +221,9 @@ function ProfileContent() {
                 {activeTab === 'messages' && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
                     <div className="text-center py-12">
-                      <FiMessageSquare className="mx-auto text-4xl text-gray-300 mb-4" />
-                      <h3 className="text-xl font-medium text-gray-600">Aucun message</h3>
-                      <p className="text-gray-400 mt-2">Vos messages apparaîtront ici</p>
+                      <FiMessageSquare className="mx-auto text-4xl text-gray-300 dark:text-gray-600 mb-4" />
+                      <h3 className="text-xl font-medium text-gray-600 dark:text-gray-400">Aucun message</h3>
+                      <p className="text-gray-400 dark:text-gray-500 mt-2">Vos messages apparaîtront ici</p>
                     </div>
                   </motion.div>
                 )}
@@ -223,8 +240,8 @@ export default function ProfilePage() {
   return (
     <Suspense
       fallback={
-        <div className="flex justify-center items-center h-screen bg-white">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+        <div className="flex justify-center items-center h-screen bg-white dark:bg-gray-900">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500 dark:border-indigo-400"></div>
         </div>
       }
     >

@@ -226,7 +226,7 @@ export default function AppHeader({ user, onLogout }: AppHeaderProps) {
       </nav>
 
       {/* Add padding to content to account for both top and bottom bars */}
-      <div className="pt-12 pb-6 md:pt-16 md:pb-0"></div>
+      <div className="pt-12 pb-0 md:pt-16 md:pb-0"></div>
     </>
   );
 }

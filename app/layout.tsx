@@ -7,6 +7,7 @@ import Footer from '@/components/Ui/Footer';
 import "./globals.css";
 import { supabase } from '@/lib/supabase';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
+import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -80,6 +81,7 @@ export default function RootLayout({
         <Header user={user} onLogout={handleLogout} />
           {children}
           <PWAInstallPrompt />
+          <ServiceWorkerRegistration />
         <Footer />
       </body>
     </html>

@@ -17,9 +17,7 @@ import {
   FaLinkedinIn,
   FaEnvelope,
   FaInstagram,
-  FaPoll, FaVoteYea, FaImages, FaShareAlt, FaDownload
 } from 'react-icons/fa';
-import { BsGraphUp, BsCheck2Circle } from 'react-icons/bs';
 import { SiMessenger } from 'react-icons/si';
 import { 
   TwitterShareButton, 
@@ -30,8 +28,6 @@ import {
   FacebookMessengerShareButton
 } from 'react-share';
 import html2canvas from 'html2canvas';
-import { FiDownload } from 'react-icons/fi';
-import { ClipLoader } from 'react-spinners';
 
 interface PollOptionsProps {
   poll: Poll;

@@ -191,10 +191,10 @@ function EmptyState() {
     <div className="text-center py-8">
       <p className="text-gray-600 dark:text-gray-300">You haven't created any polls yet.</p>
       <Link
-        href="/create-poll"
+        href="/auth/create"
         className="mt-4 inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
       >
-        Create Your First Poll
+        Créez votre premier sondage
       </Link>
     </div>
   );

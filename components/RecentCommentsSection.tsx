@@ -297,7 +297,7 @@ export default function RecentCommentsSection() {
                         )}
                       </div>
                       
-                      <p className="mt-1 text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                      <p className="mt-1 text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
                         {comment.content}
                       </p>
                       
