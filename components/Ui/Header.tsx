@@ -182,14 +182,14 @@ export default function AppHeader({ user, onLogout }: AppHeaderProps) {
             <span className="text-xs">Accueil</span>
           </Link>
           
-          <Link 
+          {/* <Link 
             href="/category" 
             className={`flex flex-col items-center p-2 transition-colors ${isActive('/category') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-gray-400'}`}
             aria-label="Catégories"
           >
             <FaTags className="text-xl mb-1" />
             <span className="text-xs">Catégories</span>
-          </Link>
+          </Link> */}
           
           {/* Create Button */}
           <div className="flex flex-col items-center">

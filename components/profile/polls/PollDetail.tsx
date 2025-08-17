@@ -152,9 +152,9 @@ export default function PollDetail({ pollId }: PollDetailProps) {
             }
           />
         </div>
-        <div className="bg-gray-100 dark:bg-gray-900 min-h-screen">
+        <div className="bg-gray-100 dark:bg-gray-800 min-h-screen">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="bg-gray-100 dark:bg-gray-900 flex flex-col lg:flex-row gap-8">
+            <div className="bg-gray-100 dark:bg-gray-800 flex flex-col lg:flex-row gap-8">
               {/* Comments Section */}
               <div className="flex-1">
                 <PollComments

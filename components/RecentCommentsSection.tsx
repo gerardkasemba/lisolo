@@ -1,12 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { FaComment, FaArrowRight, FaExclamationTriangle, FaUser } from 'react-icons/fa';
 import Image from 'next/image';
 
-// Reuse the same interfaces you already defined
 interface AuthUser {
   id: string;
   email?: string;
@@ -33,7 +32,6 @@ interface Comment {
   poll?: Poll;
 }
 
-// Utility functions for offline support
 const getLocalData = <T,>(key: string): T | null => {
   if (typeof window === 'undefined') return null;
   try {
@@ -63,6 +61,7 @@ export default function RecentCommentsSection() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isOffline, setIsOffline] = useState(!isOnline());
+  const [channel, setChannel] = useState<any>(null);
 
   // Network status listener
   useEffect(() => {
@@ -78,129 +77,155 @@ export default function RecentCommentsSection() {
     };
   }, []);
 
-  useEffect(() => {
-    const fetchRecentComments = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+  const fetchUserData = useCallback(async (userId: string) => {
+    try {
+      const { data } = await supabase
+        .from('users')
+        .select('id, email, user_metadata')
+        .eq('id', userId)
+        .single();
+      return data || null;
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      return null;
+    }
+  }, []);
 
-        // Try to get cached comments first
-        const cachedComments = getLocalData<Comment[]>('recentComments');
-        if (cachedComments) {
-          setComments(cachedComments);
-        }
+  const fetchPollData = useCallback(async (pollId: number) => {
+    try {
+      const { data } = await supabase
+        .from('polls')
+        .select('id, question, category, region')
+        .eq('id', pollId)
+        .single();
+      return data || null;
+    } catch (error) {
+      console.error('Error fetching poll:', error);
+      return null;
+    }
+  }, []);
 
-        // Only fetch from server if online
-        if (!isOffline) {
-          // First fetch the comments
-          const { data: commentsData, error: commentsError } = await supabase
-            .from('comments')
-            .select('id, poll_id, user_id, content, created_at')
-            .order('created_at', { ascending: false })
-            .limit(10);
+  const fetchAndCombineComments = useCallback(async (commentData: Comment[]) => {
+    const combinedComments: Comment[] = [];
+    
+    for (const comment of commentData) {
+      const [user, poll] = await Promise.all([
+        fetchUserData(comment.user_id),
+        fetchPollData(comment.poll_id)
+      ]);
+      
+      combinedComments.push({
+        ...comment,
+        user: user || undefined,
+        poll: poll || undefined
+      });
+    }
+    
+    return combinedComments;
+  }, [fetchUserData, fetchPollData]);
 
-          if (commentsError) throw commentsError;
-          if (!commentsData || commentsData.length === 0) {
-            setComments([]);
-            setLocalData('recentComments', []);
-            return;
-          }
+  const initializeComments = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-          // Get user IDs from comments
-          const userIds = commentsData.map(c => c.user_id);
-          const pollIds = commentsData.map(c => c.poll_id);
-
-          // Fetch user data from auth.users
-          const { data: usersData } = await supabase
-            .from('users')
-            .select('id, email, user_metadata')
-            .in('id', userIds)
-            .eq('aud', 'authenticated');
-
-          // Fetch poll data
-          const { data: pollsData } = await supabase
-            .from('polls')
-            .select('id, question, category, region')
-            .in('id', pollIds);
-
-          // Combine the data
-          const combinedData = commentsData.map(comment => ({
-            ...comment,
-            user: usersData?.find(u => u.id === comment.user_id),
-            poll: pollsData?.find(p => p.id === comment.poll_id)
-          }));
-
-          setComments(combinedData);
-          setLocalData('recentComments', combinedData);
-        }
-      } catch (err) {
-        console.error('Error fetching comments:', err);
-        setError(err instanceof Error ? err.message : 'An unknown error occurred');
-        
-        // If we have cached comments but fetch failed, use those
-        const cachedComments = getLocalData<Comment[]>('recentComments');
-        if (cachedComments) {
-          setComments(cachedComments);
-        }
-      } finally {
-        setLoading(false);
+      // Try to get cached comments first
+      const cachedComments = getLocalData<Comment[]>('recentComments');
+      if (cachedComments) {
+        setComments(cachedComments);
       }
-    };
 
-    fetchRecentComments();
+      // Only fetch from server if online
+      if (!isOffline) {
+        const { data: commentsData, error: commentsError } = await supabase
+          .from('comments')
+          .select('id, poll_id, user_id, content, created_at')
+          .order('created_at', { ascending: false })
+          .limit(10);
 
-    // Set up realtime subscription for new comments
-    const commentsChannel = supabase.channel('recent-comments')
-      .on('postgres_changes', {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'comments'
-      }, async (payload) => {
-        if (isOffline) return;
-        
-        try {
-          // Fetch the new comment with user and poll data
-          const { data: newCommentData, error: commentError } = await supabase
-            .from('comments')
-            .select('id, poll_id, user_id, content, created_at')
-            .eq('id', payload.new.id)
-            .single();
-
-          if (commentError || !newCommentData) return;
-
-          const { data: userData } = await supabase
-            .from('users')
-            .select('id, email, user_metadata')
-            .eq('id', newCommentData.user_id)
-            .single();
-
-          const { data: pollData } = await supabase
-            .from('polls')
-            .select('id, question, category, region')
-            .eq('id', newCommentData.poll_id)
-            .single();
-
-          const newComment = {
-            ...newCommentData,
-            user: userData || undefined,
-            poll: pollData || undefined
-          };
-
-          setComments(prev => {
-            const updated = [newComment, ...prev.slice(0, 9)]; // Keep only 10 most recent
-            setLocalData('recentComments', updated);
-            return updated;
-          });
-        } catch (error) {
-          console.error('Error handling new comment:', error);
+        if (commentsError) throw commentsError;
+        if (!commentsData || commentsData.length === 0) {
+          setComments([]);
+          setLocalData('recentComments', []);
+          return;
         }
-      })
+
+        const combinedData = await fetchAndCombineComments(commentsData);
+        setComments(combinedData);
+        setLocalData('recentComments', combinedData);
+      }
+    } catch (err) {
+      console.error('Error fetching comments:', err);
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
+      
+      // If we have cached comments but fetch failed, use those
+      const cachedComments = getLocalData<Comment[]>('recentComments');
+      if (cachedComments) {
+        setComments(cachedComments);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [isOffline, fetchAndCombineComments]);
+
+  // Initialize comments and realtime subscription
+  useEffect(() => {
+    initializeComments();
+
+    // Only setup realtime if online
+    if (isOffline) return;
+
+    const commentsChannel = supabase
+      .channel('recent-comments')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'comments',
+        },
+        async (payload) => {
+          try {
+            const newComment = payload.new as Comment;
+            const [user, poll] = await Promise.all([
+              fetchUserData(newComment.user_id),
+              fetchPollData(newComment.poll_id)
+            ]);
+
+            const enrichedComment = {
+              ...newComment,
+              user: user || undefined,
+              poll: poll || undefined
+            };
+
+            setComments(prev => {
+              const updated = [enrichedComment, ...prev.slice(0, 9)]; // Keep only 10 most recent
+              setLocalData('recentComments', updated);
+              return updated;
+            });
+          } catch (error) {
+            console.error('Error handling new comment:', error);
+          }
+        }
+      )
       .subscribe();
 
+    setChannel(commentsChannel);
+
     return () => {
-      supabase.removeChannel(commentsChannel);
+      if (commentsChannel) {
+        supabase.removeChannel(commentsChannel);
+      }
     };
-  }, [isOffline]);
+  }, [initializeComments, isOffline, fetchUserData, fetchPollData]);
+
+  // Handle online/offline changes
+  useEffect(() => {
+    if (!isOffline && channel === null) {
+      // Re-initialize if we come back online
+      initializeComments();
+    }
+  }, [isOffline, channel, initializeComments]);
 
   if (loading) {
     return (
@@ -233,9 +258,17 @@ export default function RecentCommentsSection() {
     <section className="py-8 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h3 className="text-xl md:text-2xl font-bold mb-6 text-gray-900 dark:text-white flex items-center">
-          <FaComment className="mr-2 text-indigo-500" />  Commentaires récents
+          <FaComment className="mr-2 text-indigo-500" /> Commentaires récents
         </h3>
         
+        {isOffline && (
+          <div className="mb-4 bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 text-center">
+            <p className="text-yellow-700 dark:text-yellow-300">
+              You're offline. Showing cached comments. New comments will appear when you're back online.
+            </p>
+          </div>
+        )}
+
         <div className="space-y-4">
           {comments.length === 0 ? (
             <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-8 text-center">
@@ -247,8 +280,8 @@ export default function RecentCommentsSection() {
           ) : (
             comments.map((comment) => {
               const userName = comment.user?.user_metadata?.name || 
-                              comment.user?.email?.split('@')[0] || 
-                              'Anonymous';
+                            comment.user?.email?.split('@')[0] || 
+                            'Anonymous';
               const avatarUrl = comment.user?.user_metadata?.avatar_url;
 
               return (
@@ -323,18 +356,6 @@ export default function RecentCommentsSection() {
             })
           )}
         </div>
-        
-        {/* {comments.length > 0 && (
-          <div className="mt-6 text-center">
-            <Link
-              href="/comments"
-              className="inline-flex items-center text-indigo-600 dark:text-indigo-400 hover:underline"
-              prefetch={false}
-            >
-              View all comments <FaArrowRight className="ml-1" />
-            </Link>
-          </div>
-        )} */}
       </div>
     </section>
   );
