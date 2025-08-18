@@ -21,55 +21,6 @@ export function usePollData(pollId: number) {
     replies: 'connecting',
   });
 
-  // Push notifications setup (unchanged)
-  const { playerId, error: pushError } = usePushNotification(currentUserId);
-  useEffect(() => {
-    if (pushError) console.error('Push notification error:', pushError);
-    if (playerId) console.log('OneSignal player ID:', playerId);
-  }, [pushError, playerId]);
-
-    // Firebase push notification subscription
-  const subscribeToPush = useCallback(async () => {
-    if (!messaging || typeof window === 'undefined') {
-      console.warn('Push notifications not supported');
-      return;
-    }
-    try {
-      const permission = await Notification.requestPermission();
-      if (permission === 'granted') {
-        const registration = await navigator.serviceWorker.ready;
-        const subscription = await registration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: 'BiCZdjm2QZQMowHhVl7T3cp6Dcvhu9txwR-3kB8MOBw', // Replace with your VAPID public key
-        });
-
-        // Send subscription to API route
-        const response = await fetch('/api/subscribe', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            subscription,
-            userId: currentUserId,
-            region: poll?.region,
-          }),
-        });
-        if (!response.ok) throw new Error('Failed to save subscription');
-        console.log('Subscribed to push notifications');
-      } else {
-        console.warn('Notification permission denied');
-      }
-    } catch (error) {
-      console.error('Error subscribing to push:', error);
-    }
-  }, [currentUserId, poll?.region]);
-
-  // Trigger subscription when authenticated
-  useEffect(() => {
-    if (isAuthenticated && currentUserId) {
-      subscribeToPush();
-    }
-  }, [isAuthenticated, currentUserId, subscribeToPush]);
-
   // Memoized comment thread builder (unchanged)
   const buildThreadedComments = useCallback((comments: Comment[], replies: Reply[]): Comment[] => {
     const replyMap = new Map<number, Reply[]>();
