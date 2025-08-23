@@ -1,6 +1,7 @@
 // components/Footer.tsx
 import Link from 'next/link';
-import { FaPoll } from 'react-icons/fa';
+import { FaPoll, FaInstagram, FaFacebook } from 'react-icons/fa';
+import Image from 'next/image';
 
 export default function Footer() {
   return (
@@ -12,10 +13,33 @@ export default function Footer() {
             
             {/* Branding */}
             <div className="flex items-center justify-center md:justify-start space-x-2">
-              <div className="bg-indigo-600 dark:bg-indigo-500 p-1.5 rounded-lg">
-                <FaPoll className="text-white text-lg" />
-              </div>
-              <span className="text-lg font-semibold text-indigo-600 dark:text-indigo-400">Lisolo</span>
+              <Image src="/PamojaLogoMain1.svg"
+                alt="PamojaKongo Logo"
+                width={100}
+                height={100}
+              />
+            </div>
+            
+            {/* Social Media Links */}
+            <div className="flex justify-center md:justify-end space-x-4">
+              <a
+                href="https://www.instagram.com/pamojakongo"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-600 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
+                aria-label="Follow us on Instagram"
+              >
+                <FaInstagram className="text-2xl" />
+              </a>
+              <a
+                href="https://www.facebook.com/pamojakongo"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                aria-label="Follow us on Facebook"
+              >
+                <FaFacebook className="text-2xl" />
+              </a>
             </div>
             
             {/* Links - centered on mobile, left on desktop */}
@@ -38,7 +62,7 @@ export default function Footer() {
           {/* Copyright - always centered */}
           <div className="mt-6 text-center">
             <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400">
-              © {new Date().getFullYear()} Lisolo. Tous droits réservés.
+              © {new Date().getFullYear()} PamojaKongo. Tous droits réservés.
             </p>
           </div>
         </div>
