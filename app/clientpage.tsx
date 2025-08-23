@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 import Image from 'next/image';
-import { FaPoll, FaFilm, FaLandmark, FaMicrochip, FaRunning, FaUtensils, FaPlane, FaHeartbeat, FaGraduationCap, FaTags, FaPlus, FaArrowRight, FaFire, FaChartLine, FaComment, FaMapMarkerAlt, FaVoteYea } from 'react-icons/fa';
+import { FaSlidersH, FaFilm, FaSync, FaLandmark, FaMicrochip, FaRunning, FaUtensils, FaPlane, FaHeartbeat, FaGraduationCap, FaTags, FaPlus, FaArrowRight, FaFire, FaChartLine, FaComment, FaMapMarkerAlt, FaVoteYea } from 'react-icons/fa';
 import {
   FaTheaterMasks,
   FaMusic,
@@ -132,7 +132,7 @@ export default function ClientPage() {
               vote_count: voteCounts[poll.id] || 0 
             }))
             .sort((a, b) => (b.vote_count || 0) - (a.vote_count || 0))
-            .slice(0, 3);
+            .slice(0, 6);
           
           setTrendingPolls(trending);
           setLocalData('trendingPolls', trending);
@@ -224,12 +224,11 @@ export default function ClientPage() {
   if (showSplash) {
     return (
       <div className="fixed inset-0 bg-white flex flex-col items-center justify-center z-50">
-        <div className="animate-pulse">
-          <div className="bg-indigo-600 p-4 rounded-xl shadow-lg">
-            <FaPoll className="text-white text-6xl" />
-          </div>
-        </div>
-        <h1 className="mt-6 text-3xl font-bold text-indigo-600">Lisolo</h1>
+          <Image src="/PamojaLogoMain1.svg"
+            alt="PamojaKongo Logo"
+            width={100}
+            height={100}
+          />
       </div>
     );
   }
@@ -263,97 +262,108 @@ export default function ClientPage() {
   return (
     <div className="min-h-screen text-gray-900 dark:text-white">
       {/* Rest of your JSX remains unchanged */}
-      <section className="bg-indigo-50 dark:bg-gray-800 py-8 md:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white">
-              La Voix du Peuple
-            </h2>
-            <p className="mt-3 max-w-2xl mx-auto text-base md:text-lg text-gray-600 dark:text-gray-300">
-              Participez aux tendances qui façonnent notre communauté
-            </p>
-          </div>
-          <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-5">
-            {[
-              'Divertissement',
-              'Politique',
-              'Polémique',
-              'Technologie',
-              'Sports',
-              'Cuisine',
-              'Voyages',
-              'Santé',
-              'Éducation',
-              'Culture',
-              'Musique',
-              'Mode',
-              'Société',
-              'Économie',
-              'Environnement',
-              'Agriculture',
-              'Religion',
-              'Histoire',
-              'Vie quotidienne',
-              'Humour',
-            ]
-              .sort(() => Math.random() - 0.5) // Shuffle the array
-              .slice(0, 8) // Take the first 8 elements
-              .map((category) => (
-                <Link
-                  key={category}
-                  href={`/category/${encodeURIComponent(category)}`}
-                  className="bg-white dark:bg-gray-700 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-5 text-center group border border-gray-100 dark:border-gray-600"
-                >
-                  <div className={`mx-auto ${getCategoryColor(category).bg} w-14 h-14 rounded-full flex items-center justify-center mb-3 transition-colors`}>
-                    {getCategoryIcon(category)}
-                  </div>
-                  <h3 className="text-lg font-medium text-gray-800 dark:text-white">{category}</h3>
-                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{getCategoryDescription(category)}</p>
-                </Link>
-              ))}
-          </div>
-          <div className="md:hidden pb-2">
-            <div className="flex overflow-x-auto gap-3 px-1 py-2 -mx-1 snap-x snap-mandatory" role="region" aria-label="Carrousel de catégories">
-              {['Divertissement', 'Politique', 'Technologie', 'Sports', 'Cuisine', 'Voyages', 'Santé', 'Éducation'].map((category) => (
-                <Link
-                  key={category}
-                  href={`/category/${encodeURIComponent(category)}`}
-                  className="flex-shrink-0 w-32 bg-white dark:bg-gray-700 rounded-lg shadow-xs hover:shadow-sm p-4 text-center border border-gray-100 dark:border-gray-600 snap-center"
-                >
-                  <div className={`mx-auto ${getCategoryColor(category).bg} w-10 h-10 rounded-full flex items-center justify-center mb-2`}>
-                    {getCategoryIcon(category, 'sm')}
-                  </div>
-                  <h3 className="text-sm font-medium text-gray-800 dark:text-white">{category}</h3>
-                </Link>
-              ))}
-            </div>
-            <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, repeat: 3, repeatType: 'reverse' }}
-              className="text-center mt-2 text-sm text-gray-600 dark:text-gray-300 flex items-center justify-center"
-              aria-label="Instruction pour glisser"
-            >
-              <FaArrowRight className="mr-2 w-4 h-4" aria-hidden="true" />
-              Glissez pour voir plus
-            </motion.div>
-          </div>
-          <div className="text-center mt-10">
-            <Link
-              href={user ? '/auth/create' : '/auth/login'}
-              className="inline-flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-lg transition-colors shadow-md hover:shadow-lg"
-            >
-              <FaPlus className="mr-2" />
-              {user ? 'Créer un sondage' : 'Commencer maintenant'}
-            </Link>
-          </div>
-        </div>
-      </section>
+
       <section className="py-8 md:py-12 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-xl md:text-2xl font-bold mb-6 text-gray-900 dark:text-white flex items-center">
-            <FaFire className="text-orange-500 mr-2" /> Sondages tendances
-          </h3>
+          <div className="relative mb-8">
+            {/* Main Header */}
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 pb-6 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex items-center gap-3">
+                {/* Icon with gradient background */}
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-red-500 rounded-lg blur-sm opacity-60"></div>
+                  <div className="relative bg-gradient-to-br from-orange-500 to-red-600 w-12 h-12 rounded-lg flex items-center justify-center shadow-lg">
+                    <FaFire className="text-white text-xl" />
+                  </div>
+                </div>
+                
+                {/* Title with gradient text */}
+                <div>
+                  <h3 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-600 dark:from-orange-400 dark:to-red-400 bg-clip-text text-transparent">
+                    Sondages tendances
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    Les sujets les plus populaires en ce moment
+                  </p>
+                </div>
+              </div>
+
+              {/* Interactive Stats and Filters */}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+                {/* Live indicator */}
+                <div className="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 px-3 py-1.5 rounded-full">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-sm font-medium text-green-700 dark:text-green-300">En direct</span>
+                </div>
+
+                {/* View options */}
+                {/* <div className="flex items-center gap-2">
+                  <button className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                    <FaSlidersH className="text-gray-600 dark:text-gray-300" />
+                  </button>
+                  <button className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                    <FaSync className="text-gray-600 dark:text-gray-300" />
+                  </button>
+                </div> */}
+              </div>
+            </div>
+
+            {/* Sub-header with additional info */}
+            <div className="flex flex-wrap items-center gap-4 mt-4">
+              {/* Trending tags */}
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Tendances :</span>
+                <div className="flex flex-wrap gap-2">
+                  {['Politique', 'Sport', 'Techno', 'Culture'].map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs rounded-full font-medium hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors cursor-pointer"
+                    >
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Stats counter */}
+              <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                <div className="flex items-center gap-1">
+                  <FaChartLine className="text-green-500" />
+                  <span>+24% cette semaine</span>
+                </div>
+                <div className="w-px h-4 bg-gray-300 dark:bg-gray-600"></div>
+                <div className="flex items-center gap-1">
+                  <FaUsers className="text-purple-500" />
+                  <span>2.4K participants</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Time filter tabs */}
+            {/* <div className="flex gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg mt-4 w-fit">
+              {[
+                { label: '24h', value: '24h' },
+                { label: '7j', value: '7d' },
+                { label: '30j', value: '30d' },
+                { label: 'Tout', value: 'all' },
+              ].map((tab) => (
+                <button
+                  key={tab.value}
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                    tab.value === '24h'
+                      ? 'bg-white dark:bg-gray-700 text-orange-600 dark:text-orange-400 shadow-sm'
+                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div> */}
+
+            {/* Decorative elements */}
+            <div className="absolute -top-2 -right-2 w-20 h-20 bg-orange-100 dark:bg-orange-900/20 rounded-full blur-xl opacity-40"></div>
+            <div className="absolute -bottom-2 -left-2 w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full blur-xl opacity-30"></div>
+          </div>
           {trendingPolls.length === 0 ? (
             <div className="bg-white dark:bg-gray-800 rounded-lg p-6 text-center">
               <p className="text-gray-600 dark:text-gray-300">Aucun sondage tendance pour le moment.</p>
@@ -410,6 +420,158 @@ export default function ClientPage() {
               ))}
             </div>
           )}
+        </div>
+      </section>
+      <section className="bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 py-12 md:py-20 relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute top-0 left-0 w-72 h-72 bg-indigo-100 dark:bg-indigo-900/20 rounded-full -translate-x-36 -translate-y-36 opacity-50"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-100 dark:bg-blue-900/20 rounded-full translate-x-48 translate-y-48 opacity-50"></div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+
+          {/* Desktop Grid - Fixed equal sizes */}
+          <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {[
+              'Divertissement',
+              'Politique',
+              'Technologie',
+              'Sports',
+              'Cuisine',
+              'Voyages',
+              'Santé',
+              'Éducation',
+            ].map((category, index) => (
+              <motion.div
+                key={category}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                whileHover={{ y: -5, scale: 1.02 }}
+                className="h-full" // Ensure motion div takes full height
+              >
+                <Link
+                  href={`/category/${encodeURIComponent(category)}`}
+                  className="block bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 text-center border border-white/20 dark:border-gray-700/50 hover:border-indigo-300 dark:hover:border-indigo-400 h-full flex flex-col" // Added flex and h-full
+                >
+                  <div className={`mx-auto ${getCategoryColor(category).bg} w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg flex-shrink-0`}>
+                    {getCategoryIcon(category, 'lg')}
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2 min-h-[3rem] flex items-center justify-center">
+                    {category}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 flex-grow mb-3">
+                    {getCategoryDescription(category)}
+                  </p>
+                  <div className="text-xs text-indigo-500 dark:text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity mt-auto">
+                    Explorer →
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Mobile Carousel - Fixed equal sizes */}
+          <div className="md:hidden mb-8">
+            <div className="flex overflow-x-auto gap-4 px-2 py-4 -mx-2 snap-x snap-mandatory scrollbar-hide" role="region" aria-label="Carrousel de catégories">
+              {['Divertissement', 'Politique', 'Technologie', 'Sports', 'Cuisine', 'Voyages', 'Santé', 'Éducation'].map((category, index) => (
+                <motion.div
+                  key={category}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  className="flex-shrink-0 w-36 h-48 snap-center" // Fixed height for mobile
+                >
+                  <Link
+                    href={`/category/${encodeURIComponent(category)}`}
+                    className="block bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl shadow-md hover:shadow-lg p-4 text-center border border-white/20 dark:border-gray-700/50 transition-all duration-300 h-full flex flex-col"
+                  >
+                    <div className={`mx-auto ${getCategoryColor(category).bg} w-12 h-12 rounded-xl flex items-center justify-center mb-3 flex-shrink-0`}>
+                      {getCategoryIcon(category, 'md')}
+                    </div>
+                    <h3 className="text-sm font-semibold text-gray-800 dark:text-white mb-2 line-clamp-2 min-h-[2.5rem] flex items-center justify-center">
+                      {category}
+                    </h3>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-3 flex-grow">
+                      {getCategoryDescription(category)}
+                    </p>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+            
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1, duration: 0.5 }}
+              className="text-center mt-4 text-sm text-gray-500 dark:text-gray-400 flex items-center justify-center"
+              aria-label="Instruction pour glisser"
+            >
+              <FaArrowRight className="mr-2 w-4 h-4 animate-pulse" aria-hidden="true" />
+              Glissez pour explorer
+            </motion.div>
+          </div>
+
+          {/* Tablet Grid (optional) - Fixed equal sizes */}
+          <div className="hidden sm:md:grid md:hidden grid-cols-2 gap-4 mb-12">
+            {[
+              'Divertissement',
+              'Politique',
+              'Technologie',
+              'Sports',
+            ].map((category, index) => (
+              <motion.div
+                key={category}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="h-full"
+              >
+                <Link
+                  href={`/category/${encodeURIComponent(category)}`}
+                  className="block bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-5 text-center border border-white/20 dark:border-gray-700/50 hover:border-indigo-300 dark:hover:border-indigo-400 h-full flex flex-col"
+                >
+                  <div className={`mx-auto ${getCategoryColor(category).bg} w-14 h-14 rounded-xl flex items-center justify-center mb-3 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg flex-shrink-0`}>
+                    {getCategoryIcon(category, 'lg')}
+                  </div>
+                  <h3 className="text-base font-semibold text-gray-800 dark:text-white mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2 min-h-[2.5rem] flex items-center justify-center">
+                    {category}
+                  </h3>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-3 flex-grow mb-2">
+                    {getCategoryDescription(category)}
+                  </p>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* CTA Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.5 }}
+            className="text-center"
+          >
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-white/20 dark:border-gray-700/50">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                Votre opinion compte
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-md mx-auto">
+                Rejoignez la conversation et faites entendre votre voix sur les sujets qui vous passionnent
+              </p>
+              <Link
+                href={user ? '/auth/create' : '/auth/login'}
+                className="inline-flex items-center justify-center bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+              >
+                <FaPlus className="mr-3 w-5 h-5" />
+                {user ? 'Créer un sondage' : 'Commencer maintenant'}
+              </Link>
+              {!user && (
+                <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+                  Inscription rapide et gratuite
+                </p>
+              )}
+            </div>
+          </motion.div>
         </div>
       </section>
       <RecentCommentsSection />
