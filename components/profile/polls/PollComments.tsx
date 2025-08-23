@@ -131,7 +131,7 @@ export default function PollComments({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="mb-8 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg"
+            className="mb-8 bg-white dark:bg-gray-900 p-6 rounded-xl shadow-lg"
           >
             <label htmlFor="comment-content" className="sr-only">
               Ajouter un commentaire
